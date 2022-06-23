@@ -1,0 +1,26 @@
+<launch>
+
+  <!-- Load robot -->
+  <include file="$(find panda_moveit_config)/launch/panda_control_moveit_rviz.launch">
+    <arg name="robot_ip" value="172.16.0.2"/>
+  </include>
+
+  <!-- Launch camera -->
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch"> 
+    <arg name="filters" default="pointcloud"/>
+    <arg name="depth_width" value="640"/>
+    <arg name="depth_height" value="480"/>
+    <arg name="depth_fps" value="30"/>
+    <arg name="color_width" value="640"/>
+    <arg name="color_height" value="480" />
+    <arg name="color_fps" value="30"/>
+  </include>
+
+  <!-- Static transform from end effector to camera -->
+  <node pkg="tf" type="static_transform_publisher" name="realsense_link" args="-0.2 0 -0.1 0 0 0 /panda_link0 /camera_link 100" />
+
+  <!-- Start Find object 3d -->
+  <include file="$(find find_object_2d)/launch/find_object_3d.launch.xml"/>
+
+</launch>
+
